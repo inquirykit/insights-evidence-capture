@@ -1,0 +1,4 @@
+[test]
+# The extension's globals, faked: tests/setup.ts
+preload = ["./tests/setup.ts"]
+root = "./tests"

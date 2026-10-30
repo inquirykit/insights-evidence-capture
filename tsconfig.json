@@ -1,0 +1,10 @@
+{
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    // No global types from node_modules/@types: Bun's are for tests/ (tests/tsconfig.json) only,
+    // so the extension's own code can't lean on them.
+    "types": []
+  },
+  "exclude": ["**/node_modules", ".output", "tests"]
+}

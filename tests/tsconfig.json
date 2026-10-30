@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["bun"]
+  },
+  "include": ["**/*", "../.wxt/wxt.d.ts"],
+  // Not the parent's, which leaves tests/ out
+  "exclude": []
+}

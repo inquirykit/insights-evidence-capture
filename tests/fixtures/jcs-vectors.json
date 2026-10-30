@@ -1,0 +1,46 @@
+[
+ {
+  "input": "{\"numbers\": [333333333.33333329, 1E30, 4.50, 2e-3, 0.000000000000000000000000001], \"string\": \"\\u20ac$\\u000F\\u000aA'\\u0042\\u0022\\u005c\\\\\\\"\\/\", \"literals\": [null, true, false]}",
+  "canonical": "{\"literals\":[null,true,false],\"numbers\":[333333333.3333333,1e+30,4.5,0.002,1e-27],\"string\":\"€$\\u000f\\nA'B\\\"\\\\\\\\\\\"/\"}"
+ },
+ {
+  "input": "{\"\\u20ac\": \"Euro Sign\", \"\\r\": \"Carriage Return\", \"\\ufb33\": \"Hebrew Letter Dalet With Dagesh\", \"1\": \"One\", \"\\ud83d\\ude00\": \"Emoji: Grinning Face\", \"\\u0080\": \"Control\", \"\\u00f6\": \"Latin Small Letter O With Diaeresis\"}",
+  "canonical": "{\"\\r\":\"Carriage Return\",\"1\":\"One\",\"\":\"Control\",\"ö\":\"Latin Small Letter O With Diaeresis\",\"€\":\"Euro Sign\",\"😀\":\"Emoji: Grinning Face\",\"דּ\":\"Hebrew Letter Dalet With Dagesh\"}"
+ },
+ {
+  "input": "[0, -0, 1, -1, 0.1, 1.5, 100, 1e21, 1e-7, 1e-6, 9007199254740991, 5e-324, 1.7976931348623157e308]",
+  "canonical": "[0,0,1,-1,0.1,1.5,100,1e+21,1e-7,0.000001,9007199254740991,5e-324,1.7976931348623157e+308]"
+ },
+ {
+  "input": "[1.25, 2.5, 0.30000000000000004, 1234.5678, -0.000001]",
+  "canonical": "[1.25,2.5,0.30000000000000004,1234.5678,-0.000001]"
+ },
+ {
+  "input": "[9007199254740992]",
+  "canonical": null,
+  "refused": "IntegerDomainError"
+ },
+ {
+  "input": "[100000000000000000000]",
+  "canonical": null,
+  "refused": "IntegerDomainError"
+ },
+ {
+  "input": "{ \"b\" : [ ] , \"a\" : { } , \"c\" : [ { \"z\" : 1 , \"y\" : [ null ] } ] }",
+  "canonical": "{\"a\":{},\"b\":[],\"c\":[{\"y\":[null],\"z\":1}]}"
+ },
+ {
+  "input": "[\"\\u0000\\u001f\\u007f\", \"tab\\there\", \"caf\\u00e9 \\u2615\", \"\\ud83d\\ude00 lorem\", \"<\\/script>\", \"\\u2028\\u2029\"]",
+  "canonical": "[\"\\u0000\\u001f\",\"tab\\there\",\"café ☕\",\"😀 lorem\",\"</script>\",\"  \"]"
+ },
+ {
+  "input": "[\"\\ud800\"]",
+  "canonical": null,
+  "refused": "CanonicalizationError"
+ },
+ {
+  "input": "{\"\\udc00\": 1}",
+  "canonical": null,
+  "refused": "UnicodeEncodeError"
+ }
+]

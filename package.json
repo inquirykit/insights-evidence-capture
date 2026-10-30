@@ -1,0 +1,45 @@
+{
+  "name": "insights-evidence-capture",
+  "description": "Capture web pages as signed, timestamped evidence, kept in this browser or on your Core AI & Data toolkit server.",
+  "private": true,
+  "version": "0.5.0-alpha.8",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inquirykit/insights-evidence-capture.git"
+  },
+  "homepage": "https://github.com/inquirykit/insights-evidence-capture#readme",
+  "bugs": "https://github.com/inquirykit/insights-evidence-capture/issues",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit && tsc --noEmit -p tests",
+    "test": "bun test",
+    "fixtures": "bun tests/fixtures/make-browser-record.ts && ../../ai_toolkit/.venv/bin/python -I tests/fixtures/make-server-fixtures.py ../../ai_toolkit",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "lucide-react": "^1.60.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "single-file-core": "^1.6.41",
+    "turndown": "^7.2.4"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/turndown": "^5.0.6",
+    "@wxt-dev/auto-icons": "^1.1.2",
+    "@wxt-dev/module-react": "^1.2.2",
+    "fake-indexeddb": "^6.2.6",
+    "typescript": "^7.0.2",
+    "web-ext": "^10.7.0",
+    "wxt": "^0.21.4"
+  }
+}

@@ -1,0 +1,19 @@
+node_modules
+.output
+.wxt
+web-ext.config.ts
+*.log
+.DS_Store
+# Source snapshots; `bun run zip` writes release zips to .output
+*.zip
+# WXT reads .env, .env.local, .env.[mode] and .env.[browser]; any of them can hold a key
+.env
+.env.*
+!.env.example
+# Private keys. The fixtures' public keys and TSA certificates are kept
+*.pem
+!tests/fixtures/**/*.pem
+coverage
+*.tsbuildinfo
+.idea
+.vscode

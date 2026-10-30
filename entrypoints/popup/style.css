@@ -1,0 +1,927 @@
+/* Popup: one dominant action (capture) on the first tab, everything else on the others. */
+
+body {
+  width: 400px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+main {
+  padding: var(--s3) var(--s4) var(--s4);
+}
+
+/* ------------------------------------------------------------------ header */
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  margin-bottom: var(--s3);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
+}
+
+/* Beside the name: opens the About popover, and looks pressed while it is open */
+.about-btn {
+  width: 24px;
+  height: 24px;
+  margin-left: -2px;
+  padding: 0;
+  border-color: transparent;
+  border-radius: var(--r-full);
+  background: none;
+  color: var(--muted);
+}
+
+.about-btn:hover:not(:disabled),
+.about-btn:has(+ .about:popover-open) {
+  background: var(--surface-hover);
+  border-color: transparent;
+  color: var(--fg);
+}
+
+.about-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #a855f7));
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+  flex: none;
+}
+
+.logo svg {
+  width: 15px;
+  height: 15px;
+}
+
+h1 {
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+h2 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 0 0 var(--s1);
+}
+
+/* Server status: dot + host, gear appears on hover */
+.status {
+  gap: 7px;
+  padding: 4px 8px 4px 9px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  color: var(--fg-2);
+  max-width: 190px;
+  background: var(--surface);
+  border-color: transparent;
+}
+
+.status:hover:not(:disabled) {
+  border-color: var(--border);
+}
+
+.status-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.status-gear {
+  color: var(--muted);
+  opacity: 0.6;
+  transition: opacity var(--t-fast);
+}
+
+.status:hover .status-gear {
+  opacity: 1;
+}
+
+/* About: in the top layer, under the name. Where anchor positioning is missing, under the
+ * header, where the name is unless the popup has scrolled. */
+.about {
+  position: fixed;
+  inset: auto;
+  top: 46px;
+  left: var(--s3);
+  margin: 0;
+  width: 312px;
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-elev);
+  color: var(--fg);
+  box-shadow: var(--shadow-lg);
+}
+
+.about:popover-open {
+  animation: rise var(--t-med) both;
+}
+
+@supports (position-anchor: --brand) {
+  .brand {
+    anchor-name: --brand;
+  }
+
+  .about {
+    position-anchor: --brand;
+    top: calc(anchor(bottom) + 6px);
+    left: anchor(left);
+  }
+}
+
+.about-name {
+  margin: 0 0 2px;
+  font-weight: 650;
+}
+
+.about-name .muted {
+  font-weight: 400;
+}
+
+.about-line {
+  margin: 0 0 var(--s2);
+  color: var(--fg-2);
+}
+
+.about-link {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0 calc(-1 * var(--s1)) calc(-1 * var(--s1));
+  padding: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.about-link:hover {
+  background: var(--surface-hover);
+  text-decoration: none;
+}
+
+.about-link > svg {
+  color: var(--muted);
+}
+
+.about-link-title {
+  display: block;
+  font-weight: 600;
+}
+
+.about-link-hint {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* -------------------------------------------------------------------- tabs */
+
+/* Underlined, as in the dashboard; the bar runs edge to edge under the header. The tabs, then
+ * Dashboard, which looks like one but opens the dashboard. Each is as wide as its label. */
+.tabs {
+  display: flex;
+  margin: 0 calc(-1 * var(--s4)) var(--s3);
+  padding: 0 var(--s1);
+  border-bottom: 1px solid var(--border);
+}
+
+.tablist {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+.tabs button {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 5px;
+  padding: 7px 5px 8px;
+  margin-bottom: -1px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.tabs button:hover:not(:disabled) {
+  background: none;
+  color: var(--fg);
+}
+
+.tabs button[aria-selected='true'] {
+  color: var(--fg);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+
+.tabs button[aria-selected='true'] svg {
+  color: var(--accent);
+}
+
+.tabs .tab-link {
+  flex: none;
+  margin-left: var(--s1);
+}
+
+.tabs .rec {
+  width: 7px;
+  height: 7px;
+}
+
+/* As tall as the Capture tab without a result, so the popup keeps its size from tab to tab
+ * instead of shrinking under the pointer. */
+.workspace {
+  min-height: 476px;
+}
+
+/* .stack's display would otherwise override the hidden attribute. */
+.panel[hidden] {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s2);
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.lead {
+  margin: 0;
+}
+
+/* -------------------------------------------------------------------- form */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field > label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-2);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+.field > label .muted {
+  font-weight: 400;
+}
+
+input,
+select,
+textarea {
+  padding: 7px 10px;
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 48px;
+  line-height: 1.4;
+}
+
+.select-wrap {
+  position: relative;
+}
+
+.select-wrap select {
+  appearance: none;
+  padding-left: 30px;
+  padding-right: 28px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 15px) 50%,
+    calc(100% - 10px) 50%;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+
+.select-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+button {
+  padding: 6px 11px;
+  font-weight: 500;
+}
+
+.icon-btn {
+  padding: 0;
+  width: 34px;
+  flex: none;
+}
+
+.icon-btn[aria-pressed='true'] {
+  background: var(--accent-soft);
+  color: var(--accent-soft-fg);
+  border-color: transparent;
+}
+
+/* ----------------------------------------------------------------- options */
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s3);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+.opt {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.opt-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s2);
+  font-size: 12px;
+}
+
+.opt-label {
+  font-weight: 600;
+  color: var(--fg-2);
+}
+
+.opt-hint {
+  color: var(--muted);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* One choice of N */
+.segmented {
+  display: flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.segmented button {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  background: transparent;
+  gap: 5px;
+}
+
+.segmented button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--fg);
+}
+
+.segmented button[aria-checked='true'] {
+  background: var(--bg-elev);
+  color: var(--fg);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.segmented button[aria-checked='true'] svg {
+  color: var(--accent);
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--fg-2);
+  cursor: pointer;
+}
+
+.checks input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+/* ------------------------------------------------------------ auto-capture */
+
+.auto {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--s2) var(--s3);
+  transition: border-color var(--t-med);
+}
+
+.auto-on {
+  border-color: color-mix(in srgb, var(--error) 45%, var(--border));
+}
+
+.auto-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  cursor: pointer;
+}
+
+.auto-title {
+  display: block;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.auto-sub {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The recording light: grey while off, red and pulsing while on. */
+.rec {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+}
+
+.rec-on {
+  background: var(--error);
+  animation: rec-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes rec-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rec-on {
+    animation: none;
+  }
+}
+
+/* A checkbox drawn as a switch. */
+input.switch {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 30px;
+  height: 18px;
+  padding: 0;
+  margin: 0;
+  border-radius: var(--r-full);
+  border: none;
+  background: var(--border-strong);
+  cursor: pointer;
+  transition: background var(--t-fast);
+}
+
+input.switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--r-full);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-fast);
+}
+
+input.switch:checked {
+  background: var(--error);
+}
+
+input.switch:checked::after {
+  transform: translateX(12px);
+}
+
+/* Under the title: past the light and the gap before it. */
+.auto-move {
+  margin: 2px 0 0 17px;
+}
+
+/* ----------------------------------------------------------------- capture */
+
+button.capture {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+button.capture svg {
+  width: 17px;
+  height: 17px;
+}
+
+button.capture kbd {
+  color: var(--accent-fg);
+  background: rgb(255 255 255 / 0.18);
+  border-color: rgb(255 255 255 / 0.25);
+  opacity: 0.9;
+}
+
+button.capture-done,
+button.capture-done:hover {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+
+.hint {
+  margin: calc(-1 * var(--s1)) 0 0;
+  line-height: 1.4;
+}
+
+/* ------------------------------------------------------------------ notice */
+
+.notice {
+  display: flex;
+  gap: var(--s2);
+  align-items: flex-start;
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+
+.notice svg {
+  margin-top: 2px;
+}
+
+.notice-error {
+  background: var(--error-soft);
+  color: var(--error);
+}
+
+.notice-warn {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.notice-ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+/* ------------------------------------------------------------ result card */
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  border-radius: var(--r-md);
+  padding: var(--s2) var(--s3) var(--s3);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+  width: 100%;
+  justify-content: flex-start;
+  border: none;
+  background: none;
+  padding: 2px 0;
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.card-title:hover:not(:disabled) {
+  background: none;
+  color: var(--accent);
+}
+
+.card-title .title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chev {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.file {
+  cursor: help;
+}
+
+dt {
+  color: var(--muted);
+}
+
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+code {
+  font-size: 11.5px;
+}
+
+.warnings {
+  margin: var(--s2) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--warn);
+  font-size: 12px;
+}
+
+.warnings li {
+  display: flex;
+  gap: 6px;
+}
+
+.warnings svg {
+  margin-top: 2px;
+}
+
+/* ------------------------------------------------------------------ recent */
+
+.recent {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--bg-elev);
+}
+
+.recent li + li {
+  border-top: 1px solid var(--border);
+}
+
+.recent-item {
+  width: 100%;
+  gap: var(--s2);
+  padding: 7px 10px;
+  border: none;
+  border-radius: 0;
+  background: none;
+  text-align: left;
+  font-weight: 400;
+}
+
+.recent-item:hover:not(:disabled) {
+  background: var(--surface);
+  border-color: transparent;
+}
+
+.recent .seq {
+  color: var(--muted);
+  font-size: 12px;
+  width: 30px;
+  flex: none;
+}
+
+.recent .title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent .tsa {
+  display: inline-flex;
+  flex: none;
+}
+
+.recent .chev {
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.recent-item:hover .chev {
+  opacity: 0.8;
+}
+
+.empty {
+  padding: var(--s4);
+  gap: 3px;
+}
+
+.empty svg.lucide {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 3px;
+}
+
+/* ------------------------------------------------------------------ footer */
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s1);
+  margin-top: var(--s1);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+footer button {
+  font-size: 12px;
+  color: var(--fg-2);
+  padding: 5px 9px;
+}
+
+footer button svg {
+  color: var(--muted);
+}
+
+footer > span {
+  margin-left: auto;
+}
+
+/* -------------------------------------------------------- where captures go */
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Each store has a colour of its own: its icon tile, and the whole card once chosen. */
+.choices button {
+  --choice: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  padding: 10px 12px 10px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-elev);
+  color: var(--fg);
+}
+
+.choices button[data-store='browser'] {
+  --choice: var(--tag-teal);
+}
+
+.choices button[data-store='server'] {
+  --choice: var(--tag-blue);
+}
+
+.choices button:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+.choices button[aria-checked='true'],
+.choices button[aria-checked='true']:hover:not(:disabled) {
+  border-color: var(--choice);
+  background: color-mix(in srgb, var(--choice) 9%, var(--bg-elev));
+  box-shadow: inset 0 0 0 1px var(--choice);
+}
+
+.choices button[aria-checked='true']:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--choice), var(--ring);
+}
+
+.choice-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--choice) 14%, transparent);
+  color: var(--choice);
+  transition:
+    background var(--t-fast),
+    color var(--t-fast);
+}
+
+.choice-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.choices button[aria-checked='true'] .choice-icon {
+  background: var(--choice);
+  color: var(--bg-elev);
+}
+
+/* A radio dot: a ring, filled with the store's colour once chosen */
+.choice-radio {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--r-full);
+  background: var(--bg-elev);
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast),
+    box-shadow var(--t-fast);
+}
+
+.choices button[aria-checked='true'] .choice-radio {
+  border-color: var(--choice);
+  background: var(--choice);
+  box-shadow: inset 0 0 0 3px var(--bg-elev);
+}
+
+.choice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.choice-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.choice-hint {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--muted);
+}

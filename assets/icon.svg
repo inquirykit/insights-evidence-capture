@@ -1,0 +1,20 @@
+<!-- Extension icon: Lucide "focus" (ISC) on a rounded tile in the UI accent colour, tuned for
+     16px: filled centre dot, brackets drawn a little larger and heavier than the stock glyph.
+     Source for every size; @wxt-dev/auto-icons rasterises it at build time. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#4338ca"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#tile)"/>
+  <g transform="translate(16 16) scale(4)" fill="none" stroke="#ffffff" stroke-width="3"
+     stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.2" fill="#ffffff" stroke="none"/>
+    <path d="M3 7.5V5a2 2 0 0 1 2-2h2.5"/>
+    <path d="M16.5 3h2.5a2 2 0 0 1 2 2v2.5"/>
+    <path d="M21 16.5v2.5a2 2 0 0 1-2 2h-2.5"/>
+    <path d="M7.5 21H5a2 2 0 0 1-2-2v-2.5"/>
+  </g>
+</svg>
